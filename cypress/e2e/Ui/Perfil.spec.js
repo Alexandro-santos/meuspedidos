@@ -85,5 +85,32 @@ describe('US003 - Funcionalidade: Perfil', () => {
         cy.get('.lead').should('have.text', ' Acessar Conta')
         
     });
+
+    it('Não devo criar perfil sem informar status', () => {
+        cy.cadastro('semstatus' + email)
+
+        cy.get('[data-test="dashboard-createProfile"]').click()
+        cy.get('[data-test="profile-skills"] > .MuiInputBase-root > .MuiInputBase-input').type(conhecimento)
+        cy.get('[data-test="profile-submit"]').click()
+        cy.get(':nth-child(1) > .form-text').should('have.text', 'Nos dê uma ideia de onde você está em sua carreira')
+    });
+
+    it('Não devo criar perfil sem informar conhecimento', () => {
+        cy.cadastro('semconhecimento' + email)
+        cy.get('[data-test="dashboard-createProfile"]').click()
+
+        cy.get('#mui-component-select-status').click()
+        cy.get('.MuiMenu-list li')
+
+            .then(($li) => {
+
+            const items = $li.toArray()
+
+            return Cypress._.sample(items)
+
+        }).click()
+        cy.get('[data-test="profile-submit"]').click()
+        cy.get('.MuiFormHelperText-root').should('have.text', 'Conhecimentos é obrigatório')
+    });
     
 });
