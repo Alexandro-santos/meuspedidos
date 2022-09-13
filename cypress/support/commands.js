@@ -26,6 +26,8 @@
 
 /// <reference types="Cypress" />
 
+import auth from '../fixtures/auth.json'
+
 Cypress.Commands.add('navigate', (route) => {
     cy.intercept(route).as('loadpage')
     cy.visit(route, { timeout: 30000 })
@@ -98,4 +100,53 @@ Cypress.Commands.add("login", (email, password) => {
     cy.get('[name="current"]').check()
     cy.get('[data-test="education-description"] > .MuiInputBase-root').type(conhecimento)
     cy.get('[data-test="education-submit"]').click()
+ })
+
+ Cypress.Commands.add("atenticacao", () => { 
+    cy.request({
+        method: 'POST',
+        url: '/api/auth',
+        body: auth
+    }).then((response) => {
+        return response.body.jwt
+    })
+})
+
+Cypress.Commands.add("criarPostagem", (token, value) =>{
+    cy.request({
+        method: 'POST',
+        url: '/api/posts',
+        headers:{
+            accept: 'application/json',
+            Cookie: token,
+            ContentType: "application/json"
+        },
+        body:{
+            "text": value
+        }
+    })
+})
+
+Cypress.Commands.add("curtirPost", (token, id) => { 
+    cy.request({
+        method: 'PUT',
+        url: `/api/posts/like/${id}`,
+        headers:{
+            accept: 'application/json',
+            Cookie: token,
+            ContentType: "application/json"
+        }
+    })
+ })
+
+ Cypress.Commands.add("descurtirPost", (token, id) => { 
+    cy.request({
+        method: 'PUT',
+        url: `/api/posts/unlike/${id}`,
+        headers:{
+            accept: 'application/json',
+            Cookie: token,
+            ContentType: "application/json"
+        }
+    })
  })
