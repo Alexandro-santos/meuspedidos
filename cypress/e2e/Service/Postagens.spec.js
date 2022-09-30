@@ -1,12 +1,12 @@
 describe('Teste de criação de postagens', () => {
     let token
     beforeEach(() => {
-        cy.atenticacao().then((auth) => {
+        cy.autenticacao().then((auth) => {
             token = auth
         })
     });
     
-    it('Criar uma postagem', () => {
+    it.only('Criar uma postagem', () => {
         
 
         cy.request({
@@ -37,7 +37,7 @@ describe('Teste consulta', () => {
     });
 
     it('Consultar postagens', () => {
-        
+        cy.log(token)
 
         cy.request({
             method: 'GET',

@@ -19,8 +19,8 @@ var conhecimentos = ['Testes de Integração, Automação de Testes', 'Cypress, 
 'Testes de Integração, Automação de Testes, Cypress', 'Testes Manuais, Testes de Integração, Automação de Testes']
 
 const conhecimento = Cypress._.sample(conhecimentos)
-
-describe('US003 - Funcionalidade: Perfil', () => {
+ 
+describe('US001 - Funcionalidade: Perfil', () => {
 
     beforeEach(() => {
         cy.visit('cadastrar')
@@ -68,7 +68,7 @@ describe('US003 - Funcionalidade: Perfil', () => {
         cy.get('.lead').should('have.text', ' Acessar Conta')
     });
 
-    it('Devo experiencia e formação academica com sucesso', () => {
+    it('Devo adicionar experiencia e formação academica com sucesso', () => {
         cy.cadastro(email)
 
         cy.perfil(cidade, conhecimento, git_user, biografia, nome)
@@ -113,4 +113,60 @@ describe('US003 - Funcionalidade: Perfil', () => {
         cy.get('.MuiFormHelperText-root').should('have.text', 'Conhecimentos é obrigatório')
     });
     
+});
+
+describe('US002 - Funcionalidade: Visualização de perfil', () => {
+    beforeEach(() => {
+        cy.visit('perfis')
+    });
+
+    it('Validar primeiro item da lista', () => {
+        cy.get('[data-test="profile-name"]').first().should('have.text', 'Pedro Guerra')
+    });
+
+
+    it('Validar terceiro item da lista', () => {
+        cy.get('[data-test="profile-name"]').eq(2).should('have.text', 'Pa Sun')
+    });
+
+    it('Validar ultimo item da lista', () => {
+        cy.get('[data-test="profile-name"]').last().should('have.text', 'Roberto dos Santos Filho')
+    });
+
+
+});
+
+describe('US003 - Funcionalidade: Visualização da página de perfil com App Action', () => {
+    beforeEach(() => {
+        cy.visit('perfis')
+        cy.intercept({
+            method: 'GET',
+            url: 'api/profile'
+        },{
+            statusCode: 200,
+            fixture: "profile"
+        })
+        cy.reload()
+    });
+    
+    it('Validar primeiro item da lista com App Action', () => {
+        cy.get('[data-test="profile-name"]').first().should('have.text', 'Alexandro Lima')
+    });
+
+    it('Validar terceiro item da lista', () => {
+        cy.get('[data-test="profile-name"]').eq(2).should('have.text', 'Mariana Peixoto')
+    });
+
+    it('Validar ultimo item da lista', () => {
+        cy.get('[data-test="profile-name"]').last().should('have.text', 'Fernando Garcia')
+    });
+
+    it('Validar página de perfil vazia', () => {
+        cy.intercept('api/profile', {statusCode: 404})
+        cy.reload()
+        cy.get('[data-test="profiles-noProfiles"]').should('be.visible')
+        .and('have.text', 'Nenhum perfil encontrado')
+    });
+
+
 });

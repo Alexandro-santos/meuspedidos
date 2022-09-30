@@ -1,6 +1,6 @@
 import auth from '../../fixtures/auth.json'
 
-it('[Post] - Teste de atenticação', () => {
+it('[Post] - Teste de autenticação', () => {
     cy.request({
         method: 'POST',
         url: '/api/auth',
@@ -14,7 +14,7 @@ it('[Post] - Teste de atenticação', () => {
     })
 });
 
-it.only('[Post] - Teste de atenticação com usuario invalido', () => {
+it.only('[Post] - Teste de autenticação com usuario invalido', () => {
     cy.request({
         method: 'POST',
         url: '/api/auth',
